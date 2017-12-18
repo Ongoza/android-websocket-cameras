@@ -1,10 +1,8 @@
 package com.example.lmorda.websocketchat;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.View;
-import android.widget.Button;
 import android.widget.TextView;
 
 import okhttp3.OkHttpClient;
@@ -35,6 +33,9 @@ public class MainActivity extends AppCompatActivity {
     private final class EchoWebSocketListener extends WebSocketListener {
         @Override
         public void onOpen(WebSocket webSocket, Response response) {
+            output("WebSocket connected to ws://10.0.2.2:8080/websocket/chat");
+            output("Actively listening to localhost port 8080 for WebSocket traffic");
+            output("Sending test echo message");
             String json = "{\"type\":\"chat\",\"message\":\"im online, whats up\"}";
             output("Tx: " + json);
             webSocket.send(json);
@@ -71,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void run() {
                 Log.d("websocketchat", txt);
-                tvOutput.setText(tvOutput.getText().toString() + "\n" + txt);
+                tvOutput.setText(tvOutput.getText().toString() + "\n\n" + txt);
             }
         });
     }
