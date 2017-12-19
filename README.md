@@ -20,4 +20,4 @@ Sylvain Saurel, author of Learn to use WebSockets on Android with OkHttp
 
 ### Screenshot
 
-![alt text](https://github.com/lmorda/android-websocket-chat/blob/master/screenshot.png)
+![alt text](https://github.com/lmorda/android-websocket-chat/blob/master/screenshot.png?raw=true)
