@@ -17,6 +17,11 @@ android {
         }
     }
 }
+allprojects {
+    repositories {
+        maven { url 'https://jitpack.io' }
+    }
+}
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
@@ -26,5 +31,9 @@ dependencies {
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
 
+    // Needed for both websocket and server side events
     compile 'com.squareup.okhttp3:okhttp:3.9.1'
+
+    // Server sent events
+    compile 'com.github.heremaps:oksse:master-SNAPSHOT'
 }

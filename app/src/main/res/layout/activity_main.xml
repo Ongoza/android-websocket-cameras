@@ -9,7 +9,7 @@
                 android:paddingRight="16dp"
                 android:paddingTop="16dp"
                 android:orientation="vertical"
-                tools:context=".MainActivity">
+                tools:context=".WebSocketActivity">
     <TextView
         android:id="@+id/output"
         android:layout_width="wrap_content"
