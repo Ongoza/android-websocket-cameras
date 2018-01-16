@@ -4,7 +4,10 @@ Sample project that utilizies the new built-in WebSocket features of OkHttp3!
 
 ## Getting Started
 
-Clone this repository to your development directory. Open the Project with Android Studio 3. Import the Gradle project. Run the app module in an emulator. The app will start, connect to the java-reactive-chat running server, and send a chat message. 
+* Clone this repository to your development directory. 
+* Open the Project with Android Studio 3. 
+* Import the Gradle project. Run the app module in an emulator.
+* The app will start, connect to the java-reactive-chat running server, and send a chat message. 
 
 ### Prerequisites
 
