@@ -11,7 +11,7 @@ Sample project that utilizies the new built-in WebSocket features of OkHttp3!
 
 ### Prerequisites
 
-* git (to clone this repository)
+* git (to clone this repository)    https://github.com/lmorda/android-websocket-chat.git
 * Android Studio 3.+
 * Build tools recommended by AS when project is opened
 
