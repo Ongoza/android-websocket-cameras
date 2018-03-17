@@ -11,7 +11,10 @@ Sample project that utilizies the new built-in WebSocket features of OkHttp3!
 
 ### Prerequisites
 
-* git (to clone this repository)    https://github.com/lmorda/android-websocket-chat.git
+* git (to clone this repository)    
+  https://github.com/lmorda/android-websocket-chat.git
+* clone and run the java intellij project
+  https://github.com/lmorda/java-reactive-chat
 * Android Studio 3.+
 * Build tools recommended by AS when project is opened
 
