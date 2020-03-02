@@ -205,7 +205,7 @@ public class WebSocketActivity extends AppCompatActivity {
                     }
                 outputProgress.setText("Looking for the server. Please wait!!");
                 new Thread(new Runnable() {
-                    int progressStatus = 90;
+                    int progressStatus = 2;
                     public void run() {
                         while (!is_server_available && (progressStatus < 255)) {
                             try{
