@@ -3,8 +3,8 @@ apply plugin: 'com.android.application'
 android {
     compileSdkVersion 26
     defaultConfig {
-        applicationId "com.example.lmorda.websocketchat"
-        minSdkVersion 23
+        applicationId "com.ongoza.camsControlClient"
+        minSdkVersion 19
         targetSdkVersion 26
         versionCode 1
         versionName "1.0"

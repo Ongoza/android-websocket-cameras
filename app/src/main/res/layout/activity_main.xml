@@ -9,13 +9,54 @@
                 android:paddingRight="16dp"
                 android:paddingTop="16dp"
                 android:orientation="vertical"
-                tools:context=".WebSocketActivity">
-    <TextView
-        android:id="@+id/output"
+                tools:context="com.ongoza.camsControlClient.WebSocketActivity">
+
+    <Button
+        android:id="@+id/captureFront"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="16sp"
-        android:textColor="@android:color/black"
-        style="@style/Base.TextAppearance.AppCompat.Display1"/>
+        android:layout_centerInParent="true"
+        android:onClick="onClick"
+        android:text="Make Photo" />
 
+
+    <TextView
+        android:id="@+id/outputProgress"
+        style="@style/Base.TextAppearance.AppCompat.Display1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:maxLines="7"
+        android:gravity="center"
+        android:text="Looking for the server. Please wait!!"
+        android:visibility="visible"
+        android:background="#000"
+        android:textColor="@android:color/holo_red_dark"
+        android:textSize="16sp" />
+    <ProgressBar
+        android:id="@+id/progBar" style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:visibility="visible"
+        android:background="#000"
+        android:max="255"
+        android:padding="3dp"
+        />
+
+        <SurfaceView
+            android:id="@+id/surfaceView"
+            android:layout_width="match_parent"
+            android:background="#555"
+            android:layout_height="match_parent" />
+
+
+    <TextView
+        android:id="@+id/output"
+        style="@style/Base.TextAppearance.AppCompat.Display1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:maxLines="7"
+        android:text="!"
+        android:visibility="invisible"
+        android:textColor="@android:color/black"
+        android:textSize="16sp" />
 </LinearLayout>
