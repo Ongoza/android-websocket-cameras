@@ -1,4 +1,3 @@
-# android-websocket-chat
 
 Sample project that utilizies the new built-in WebSocket features of OkHttp3! 
 
@@ -7,22 +6,13 @@ Sample project that utilizies the new built-in WebSocket features of OkHttp3!
 * Clone this repository to your development directory. 
 * Open the Project with Android Studio 3. 
 * Import the Gradle project. Run the app module in an emulator.
-* The app will start, connect to the java-reactive-chat running server, and send a chat message. 
+* The app will start, connect to the running server, and send a chat photo.
 
 ### Prerequisites
 
-* git (to clone this repository): https://github.com/lmorda/android-websocket-chat.git
-* clone and run the java intellij project: https://github.com/lmorda/spring-boot-websocket-chat.git
+* git (to clone this repository): https://github.com/Ongoza/android-websocket-cameras.git
+* clone and run the python eaction server: https://github.com/Ongoza/eaction.git
 * Android Studio 3.+
 * Build tools recommended by AS when project is opened
 
-### Acknowledgements
 
-Sylvain Saurel, author of Learn to use WebSockets on Android with OkHttp
-
-* https://medium.com/@ssaurel/learn-to-use-websockets-on-android-with-okhttp-ba5f00aea988
-
-### Screenshot
-<p>
-  <img src="https://github.com/lmorda/android-websocket-chat/blob/master/screenshot.png" width="350"/>
-</p>
