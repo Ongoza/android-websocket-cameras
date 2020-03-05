@@ -203,7 +203,7 @@ public class WebSocketActivity extends AppCompatActivity {
                     bar.setProgress(2);
                     outputProgress.setVisibility(View.VISIBLE);
                     }
-                outputProgress.setText("Looking for the server. Please wait!!");
+                outputProgress.setText("Looking for the server. (2/255)");
                 new Thread(new Runnable() {
                     int progressStatus = 2;
                     public void run() {
@@ -212,6 +212,7 @@ public class WebSocketActivity extends AppCompatActivity {
                                 Log.d(TAG, "try ip: "+progressStatus);
                                 doWork(progressStatus);
                                 handler.post(new Runnable(){public void run(){ bar.setProgress(progressStatus); }});
+                                handler.post(new Runnable(){public void run(){ outputProgress.setText("Looking for the server. ("+progressStatus+"/255)"); }});
                                 Thread.sleep(1000);
                             }catch (Exception e){ Log.d(TAG, "exception: find server"); }
                             progressStatus++;
@@ -220,7 +221,7 @@ public class WebSocketActivity extends AppCompatActivity {
                         if(!is_server_available){
                             Log.d(TAG, "Did not find the server!");
                             handler.post(new Runnable(){public void run(){ outputProgress.setText("Can not find the server!"); }});
-                        }else{ handler.post(new Runnable(){public void run(){bar.setVisibility(View.INVISIBLE); }});
+                        }else{ handler.post(new Runnable(){public void run(){outputProgress.setVisibility(View.INVISIBLE); }});
                             }
                     }
 
@@ -338,9 +339,9 @@ public class WebSocketActivity extends AppCompatActivity {
                                     long delta = (System.currentTimeMillis() - lastTime);
                                     lastTime = System.currentTimeMillis();
         //                            Log.d(TAG, "delta="+Long.toString(delta));
-                                    if(delta<120){
-                                        int d = (int)(120-delta);
-                                        Log.d(TAG, "sleep"+d);
+                                    if(delta<200){
+                                        int d = (int)(200-delta);
+                                        Log.d(TAG, "sleep="+d);
                                         SystemClock.sleep(d);
                                     }
                                 }
@@ -363,13 +364,12 @@ public class WebSocketActivity extends AppCompatActivity {
                         YuvImage yuv = new YuvImage(data, ImageFormat.NV21, width, height, null);
                         yuv.compressToJpeg(new Rect(0, 0, width, height), 80, out);
                         webSocket.send(ByteString.of(out.toByteArray()));
-                        if(!isStream){
-                            mCamera.stopPreview();
+                        if(!isStream){ mCamera.stopPreview();
                         }else{
                             long delta = (System.currentTimeMillis() - lastTime);
                             lastTime = System.currentTimeMillis();
-//                            Log.d(TAG, "delta="+Long.toString(delta));
-                            if(delta<120){SystemClock.sleep(120-delta);}
+                            Log.d(TAG, "delta="+Long.toString(delta));
+                            if(delta<200){SystemClock.sleep(200-delta);}
                         }
                     }});
                 mCamera.startPreview();
