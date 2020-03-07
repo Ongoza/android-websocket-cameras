@@ -34,6 +34,7 @@ import okio.ByteString;
 import android.view.View;
 
 import java.io.ByteArrayOutputStream;
+import java.util.concurrent.TimeUnit;
 
 
 public class WebSocketActivity extends AppCompatActivity {
@@ -104,10 +105,10 @@ public class WebSocketActivity extends AppCompatActivity {
             if(!server_ip.isEmpty()){
                 Log.d(TAG,"2server="+server_ip);
                 request = new Request.Builder().url(server_ip).build();
-                okHttpClient = new OkHttpClient();//.newBuilder().readTimeout(1000, TimeUnit.MILLISECONDS).build();
+                okHttpClient = new OkHttpClient().newBuilder().readTimeout(1000, TimeUnit.MILLISECONDS).build();
                 webSocket = okHttpClient.newWebSocket(request, listener);
                 okHttpClient.dispatcher().executorService().shutdown();
-                SystemClock.sleep(1000);
+                SystemClock.sleep(1200);
             }
             if(!is_server_available){ findServer();}
             if(!getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA)) {
@@ -158,10 +159,10 @@ public class WebSocketActivity extends AppCompatActivity {
         final Handler pingHandler = new Handler();
         Runnable pingRunnable = new Runnable() {
             @Override public void run() {
-                Log.d(TAG,"check: "+is_server_available);
+//                Log.d(TAG,"check: "+is_server_available);
                 if(is_server_available){
 //                      webSocket.send("test");
-                    Log.d(TAG,"check: ok");
+//                    Log.d(TAG,"check: ok");
                 }else{
                     if(webSocket != null){
 //                        webSocket.
@@ -171,7 +172,7 @@ public class WebSocketActivity extends AppCompatActivity {
                         webSocket = null;
                         okHttpClient = null;
                     }
-                    okHttpClient = new OkHttpClient();//.newBuilder().readTimeout(1000, TimeUnit.MILLISECONDS).build();;
+                    okHttpClient = new OkHttpClient().newBuilder().readTimeout(1000, TimeUnit.MILLISECONDS).build();;
                     webSocket = okHttpClient.newWebSocket(request, listener);
                     okHttpClient.dispatcher().executorService().shutdown();
                     Log.d(TAG,"Reconnect ot server");
@@ -339,7 +340,7 @@ public class WebSocketActivity extends AppCompatActivity {
     public void doClick(){
         try {
             if (mCamera != null) {
-                Log.d(TAG,"start click");
+//                Log.d(TAG,"start click");
                 try{mCamera.setPreviewDisplay(surface.getHolder()); }
                 catch (Exception e){Log.d(TAG,"error get holder");}
                 mCamera.stopPreview();
@@ -348,30 +349,34 @@ public class WebSocketActivity extends AppCompatActivity {
                         new Camera.PreviewCallback(){
                             @Override
                             public void onPreviewFrame(byte[] data, Camera mCamera){
-                                Log.d(TAG,"click1");
+//                                Log.d(TAG,"click1");
                                 ByteArrayOutputStream out = new ByteArrayOutputStream();
                                 YuvImage yuv = new YuvImage(data, ImageFormat.NV21, width, height, null);
                                 yuv.compressToJpeg(new Rect(0, 0, width, height), 80, out);
                                 webSocket.send(ByteString.of(out.toByteArray()));
-                                Log.d(TAG,"click12="+out.size()+"===");
+//                                Log.d(TAG,"click12="+out.size()+"===");
 
-                                if(!isStream){mCamera.stopPreview();}
+                                if(!isStream){
+//                                    Log.d(TAG,"stopPrev");
+                                    mCamera.stopPreview();
+                                    mCamera.setPreviewCallback(null);
+                                }
                                 else{
                                     long delta = (System.currentTimeMillis() - lastTime);
                                     lastTime = System.currentTimeMillis();
         //                            Log.d(TAG, "delta="+Long.toString(delta));
                                     if(delta<200){
                                         int d = (int)(200-delta);
-                                        Log.d(TAG, "sleep="+d);
+//                                        Log.d(TAG, "sleep="+d);
                                         SystemClock.sleep(d);
                                     }
                                 }
                     }});
 
 
-                Log.d(TAG,"click2");
+//                Log.d(TAG,"click2");
                 mCamera.startPreview();
-                Log.d(TAG,"click3");
+//                Log.d(TAG,"click3");
 //                mCamera.takePicture(null, null,  new PhotoHandler(this));
             }else{
                 showLog("cNull");
