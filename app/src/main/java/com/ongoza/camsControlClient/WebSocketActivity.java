@@ -17,8 +17,10 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -67,7 +69,7 @@ public class WebSocketActivity extends AppCompatActivity {
         tvOutput = findViewById(R.id.output);
         outputProgress = findViewById(R.id.outputProgress);
         bar = findViewById(R.id.progBar);
-
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         checkPermission();
         sharedPref = getSharedPreferences("myPref", MODE_PRIVATE);
         server_ip = sharedPref.getString("ServerIP", "");
@@ -76,61 +78,79 @@ public class WebSocketActivity extends AppCompatActivity {
         ViewGroup.LayoutParams params = surface.getLayoutParams();
         params.height = 1280; // portrait mode only
         surface.setLayoutParams(params);
-        try {mCamera.setPreviewDisplay(surface.getHolder()); }
-        catch (Exception e){Log.d(TAG, "onCreate: preview get holder error"); }
-        Log.d(TAG,"server="+server_ip);
-        Log.d(TAG, "BRAND: " + Build.BRAND );
-        Log.d(TAG, "MANUFACTURER: " + Build.MANUFACTURER );
-        Log.d(TAG, "MODEL: " + Build.MODEL );
-        Log.d(TAG, "PRODUCT: " + Build.PRODUCT );
-        if(!server_ip.isEmpty()){
-            Log.d(TAG,"2server="+server_ip);
-            request = new Request.Builder().url(server_ip).build();
-            okHttpClient = new OkHttpClient();//.newBuilder().readTimeout(1000, TimeUnit.MILLISECONDS).build();
-            webSocket = okHttpClient.newWebSocket(request, listener);
-            okHttpClient.dispatcher().executorService().shutdown();
-            SystemClock.sleep(1000);
+        boolean isOk = true;
+        try{mCamera = Camera.open(cameraId);}
+        catch (Exception e){
+            isOk = false;
+            Log.d(TAG,"can not open camera=");
+            outputProgress.setVisibility(View.VISIBLE);
+            outputProgress.setText("Can not open camera");
+            if(mCamera!= null){ mCamera.release();}
+            mCamera = null;
+            Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                public void run() { System.exit(0); }
+            }, 5000);
+
         }
-        if(!is_server_available){ findServer();}
-        if(!getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA)) {
-            Log.e(TAG,"No camera on this device");
-            Toast.makeText(this, "No camera on this device", Toast.LENGTH_LONG).show();
-        } else {
-            if(cameraId < 0) {
-                Log.e(TAG,"No front facing camera found.");
-                Toast.makeText(this, "No front facing camera found.", Toast.LENGTH_LONG).show();
-            }else{
-                try{
-                    mCamera = Camera.open(cameraId);
-                    Camera.Parameters param =  mCamera.getParameters();
-//                    List<Camera.Size> sz = param.getSupportedPreviewSizes();
-//                    if (sz != null && !sz.isEmpty()) {
-//                        Camera.Size item = sz.get(sz.size()-1);
-//                        param.setPreviewSize(item.width,item.height);
-                    param.setPreviewSize(1280,720);
-                    mCamera.setParameters(param);
-                    SystemClock.sleep(40);
-//                    }
-                    Camera.Size size = mCamera.getParameters().getPreviewSize();
-                    width = size.width;
-                    height = size.height;
-                    Log.d(TAG,"size="+width+" "+height);
-//                    Camera.Parameters param = mCamera.getParameters();
-//                    Log.d(TAG,param);
-//                    preview-size-values=176x144,320x240,352x288,480x320,480x368,640x480,720x480,800x480,800x600,864x480,960x540,1280x720;
-//                    picture-size=3264x2448;  video-size=640x480;
-//                    preview-size=2048x1536
-//                    video-size-values=176x144,480x320,640x480,864x480,1280x720,1920x1080;
-//                    picture-size-values=256x144,320x240,512x288,640x480,1280x720,1024x768,1536x864,1280x960,1792x1008,1600x1200,2304x1296,2048x1536,2816x1584,2560x1920,3584x2016,3264x2448;
-                    Log.d(TAG,"camera is ready");
-                    showLog("camOk");
-//                    Log.d(TAG,parameters.flatten());
-                }
-                catch (Exception e){
-                    e.printStackTrace();
-                    Toast.makeText(this, "No camera on this device", Toast.LENGTH_LONG).show();
-                    Log.e(TAG,"camera is not ready");
-                    showLog("camNot");
+        if(isOk){
+            try {mCamera.setPreviewDisplay(surface.getHolder()); }
+            catch (Exception e){Log.d(TAG, "onCreate: preview get holder error"); }
+            Log.d(TAG,"server="+server_ip);
+            Log.d(TAG, "BRAND: " + Build.BRAND );
+            Log.d(TAG, "MANUFACTURER: " + Build.MANUFACTURER );
+            Log.d(TAG, "MODEL: " + Build.MODEL );
+            Log.d(TAG, "PRODUCT: " + Build.PRODUCT );
+            if(!server_ip.isEmpty()){
+                Log.d(TAG,"2server="+server_ip);
+                request = new Request.Builder().url(server_ip).build();
+                okHttpClient = new OkHttpClient();//.newBuilder().readTimeout(1000, TimeUnit.MILLISECONDS).build();
+                webSocket = okHttpClient.newWebSocket(request, listener);
+                okHttpClient.dispatcher().executorService().shutdown();
+                SystemClock.sleep(1000);
+            }
+            if(!is_server_available){ findServer();}
+            if(!getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA)) {
+                Log.e(TAG,"No camera on this device");
+                Toast.makeText(this, "No camera on this device", Toast.LENGTH_LONG).show();
+                outputProgress.setVisibility(View.VISIBLE);
+                outputProgress.setText("No camera on this device");
+            } else {
+                if (cameraId < 0) {
+                    Log.e(TAG, "No front facing camera found.");
+                    Toast.makeText(this, "No front facing camera found.", Toast.LENGTH_LONG).show();
+                } else {
+                    try {
+                        //                    mCamera = Camera.open(cameraId);
+                        Camera.Parameters param = mCamera.getParameters();
+                        //                    List<Camera.Size> sz = param.getSupportedPreviewSizes();
+                        //                    if (sz != null && !sz.isEmpty()) {
+                        //                        Camera.Size item = sz.get(sz.size()-1);
+                        //                        param.setPreviewSize(item.width,item.height);
+                        param.setPreviewSize(1280, 720);
+                        mCamera.setParameters(param);
+                        SystemClock.sleep(40);
+                        //                    }
+                        Camera.Size size = mCamera.getParameters().getPreviewSize();
+                        width = size.width;
+                        height = size.height;
+                        Log.d(TAG, "size=" + width + " " + height);
+                        //                    Camera.Parameters param = mCamera.getParameters();
+                        //                    Log.d(TAG,param);
+                        //                    preview-size-values=176x144,320x240,352x288,480x320,480x368,640x480,720x480,800x480,800x600,864x480,960x540,1280x720;
+                        //                    picture-size=3264x2448;  video-size=640x480;
+                        //                    preview-size=2048x1536
+                        //                    video-size-values=176x144,480x320,640x480,864x480,1280x720,1920x1080;
+                        //                    picture-size-values=256x144,320x240,512x288,640x480,1280x720,1024x768,1536x864,1280x960,1792x1008,1600x1200,2304x1296,2048x1536,2816x1584,2560x1920,3584x2016,3264x2448;
+                        Log.d(TAG, "camera is ready");
+                        showLog("camOk");
+                        //                    Log.d(TAG,parameters.flatten());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        Toast.makeText(this, "No camera on this device", Toast.LENGTH_LONG).show();
+                        Log.e(TAG, "camera is not ready");
+                        showLog("camNot");
+                    }
                 }
             }
         }
@@ -322,7 +342,8 @@ public class WebSocketActivity extends AppCompatActivity {
                 Log.d(TAG,"start click");
                 try{mCamera.setPreviewDisplay(surface.getHolder()); }
                 catch (Exception e){Log.d(TAG,"error get holder");}
-
+                mCamera.stopPreview();
+                mCamera.setPreviewCallback(null);
                 mCamera.setPreviewCallback(
                         new Camera.PreviewCallback(){
                             @Override
@@ -346,6 +367,8 @@ public class WebSocketActivity extends AppCompatActivity {
                                     }
                                 }
                     }});
+
+
                 Log.d(TAG,"click2");
                 mCamera.startPreview();
                 Log.d(TAG,"click3");
@@ -391,6 +414,8 @@ public class WebSocketActivity extends AppCompatActivity {
         isStream = false;
         if(mCamera!=null){
             mCamera.stopPreview();
+//            preview.setCamera(null);
+//            mCamera.setPreviewDisplay(null);
             mCamera.setPreviewCallback(null);
             mCamera.release();
             mCamera = null;
@@ -401,7 +426,27 @@ public class WebSocketActivity extends AppCompatActivity {
             webSocket = null;
             okHttpClient = null;
         }
+        Log.d(TAG, "onDestroy: 1 ok");
         super.onDestroy();
     }
+
+//    @Override
+//    public void surfaceDestroyed(SurfaceHolder holder) {
+//        isStream = false;
+//        if(mCamera!=null){
+//            mCamera.stopPreview();
+//            mCamera.setPreviewCallback(null);
+//            mCamera.release();
+//            mCamera = null;
+//        }
+//        if(webSocket!=null){
+//            webSocket.cancel();
+//            webSocket.close(NORMAL_CLOSURE_STATUS, null);
+//            webSocket = null;
+//            okHttpClient = null;
+//        }
+//        Log.d(TAG, "onDestroySurface: 1 ok");
+//
+//    }
 
 }
